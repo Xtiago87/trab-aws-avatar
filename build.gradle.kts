@@ -7,11 +7,11 @@ plugins {
 }
 
 group = "br.pucpr"
-version = "0.0.3-SNAPSHOT"
+version = "0.0.6-SNAPSHOT"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -53,6 +53,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     implementation("io.jsonwebtoken:jjwt-jackson:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
 
     testImplementation("io.mockk:mockk:1.14.6")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:6.0.3")

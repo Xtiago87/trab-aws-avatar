@@ -8,4 +8,5 @@ interface FileStorage {
     fun save(user: User, path: String, file: MultipartFile): String
     fun load(path: String): Resource?
     fun urlFor(name: String): String
+    fun remove(path: String): Unit
 }

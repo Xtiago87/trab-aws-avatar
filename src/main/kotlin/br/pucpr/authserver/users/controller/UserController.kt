@@ -2,8 +2,10 @@ package br.pucpr.authserver.users.controller
 
 import br.pucpr.authserver.exception.ForbiddenException
 import br.pucpr.authserver.security.UserToken
+import br.pucpr.authserver.users.AvatarService
 import br.pucpr.authserver.users.SortDir
 import br.pucpr.authserver.users.UserService
+import br.pucpr.authserver.users.UserService.Companion
 import br.pucpr.authserver.users.controller.requests.CreateUserRequest
 import br.pucpr.authserver.users.controller.requests.LoginRequest
 import br.pucpr.authserver.users.controller.requests.PatchUserRequest
@@ -16,10 +18,11 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import kotlin.math.log
 
 @RestController
 @RequestMapping("/users")
-class UserController(val service: UserService) {
+class UserController(val service: UserService, val avatarService: AvatarService) {
     @PostMapping
     fun insert(@Valid @RequestBody user: CreateUserRequest) =
         service.insert(user.toUser())
@@ -83,5 +86,12 @@ class UserController(val service: UserService) {
     fun uploadAvatar(@PathVariable id: Long, @RequestParam avatar: MultipartFile) =
         service.saveAvatar(id, avatar)
             .also { ResponseEntity.ok().build<Void>() }
+
+    @SecurityRequirement(name = "AuthServer")
+    @DeleteMapping("/{id}/avatar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteAvatar(@PathVariable id: Long) {
+            avatarService.deleteUserAvatar(id)
+    }
 
 }

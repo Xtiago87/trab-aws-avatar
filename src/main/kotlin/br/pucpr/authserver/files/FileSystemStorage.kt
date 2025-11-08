@@ -46,6 +46,19 @@ class FileSystemStorage : FileStorage {
                     StandardCharsets.UTF_8
                 )
 
+    override fun remove(path: String) {
+        val root = Paths.get(ROOT)
+        val filePath = root.resolve(path)
+            .normalize()
+            .toAbsolutePath()
+
+        if (Files.deleteIfExists(filePath)) {
+            log.info("removed $filePath")
+        } else {
+            log.warn("Attempted to remove non-existent file: $filePath")
+        }
+    }
+
     companion object {
         val ROOT = "./fs"
         val log = LoggerFactory.getLogger(FileSystemStorage::class.java)!!

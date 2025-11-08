@@ -23,8 +23,14 @@ class UserService(
         if (repository.findByEmail(user.email) != null) {
             throw BadRequestException("User already exists")
         }
-        return repository.save(user)
-            .also { log.info("User inserted: {}", it.id) }
+
+        var savedUser = repository.save(user).also { log.info("User inserted: {}", it.id) }
+
+        val avatarPath = avatarService.saveDefaultAvatar(savedUser)
+        log.info(avatarPath)
+
+        savedUser.avatar = avatarPath
+        return repository.save(savedUser)
     }
 
     fun update(id: Long, name: String): User? {
@@ -84,6 +90,7 @@ class UserService(
         user.avatar = avatarService.save(user, avatar)
         repository.save(user)
     }
+
 
     fun toResponse(user: User): UserResponse =
         UserResponse(user, avatarService.urlFor(user.avatar))
